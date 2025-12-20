@@ -1,0 +1,64 @@
+services:
+  backend:
+    container_name: video_streaming-backend
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: npm run dev
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
+
+  postgres:
+    image: postgres:14
+    container_name: video_streaming-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: video_streaming_backend
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
+  
+  redis:
+    image: redis:7
+    container_name: video_streaming_redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: video_streaming_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: donchibs59@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+
+volumes:
+  pg_data:
+  redis_data:
+
