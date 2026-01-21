@@ -3,4 +3,168 @@
  * Please do not edit it manually.
  */
 
-export interface DB {}
+import type { ColumnType } from "kysely";
+
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
+
+export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
+
+export type Json = JsonValue;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
+
+export interface Comments {
+  content: string;
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  parentId: string | null;
+  tenantId: string;
+  updatedAt: Generated<Timestamp>;
+  userId: string;
+  videoId: string;
+}
+
+export interface Jobs {
+  attempts: Generated<number>;
+  createdAt: Generated<Timestamp>;
+  error: string | null;
+  id: Generated<string>;
+  lockedAt: Timestamp | null;
+  maxAttempts: Generated<number>;
+  payload: Json;
+  runAt: Generated<Timestamp>;
+  status: Generated<string>;
+  type: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface RefreshTokens {
+  createdAt: Generated<Timestamp>;
+  expiresAt: Timestamp;
+  id: Generated<string>;
+  revokedAt: Timestamp | null;
+  tokenHash: string;
+  userId: string;
+}
+
+export interface SchemaMigrations {
+  version: string;
+}
+
+export interface Tags {
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  name: string;
+}
+
+export interface Tenants {
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  name: string;
+}
+
+export interface UploadSessions {
+  createdAt: Generated<Timestamp>;
+  fileName: string;
+  fileSize: Int8;
+  id: Generated<string>;
+  mimeType: string;
+  status: Generated<string>;
+  storageKey: string;
+  tenantId: string;
+  updatedAt: Generated<Timestamp>;
+  uploadedByte: Generated<Int8>;
+  userId: string;
+}
+
+export interface Users {
+  avatar: string | null;
+  createdAt: Generated<Timestamp>;
+  email: string;
+  emailVerified: Generated<boolean>;
+  fullName: string | null;
+  googleId: string;
+  id: Generated<string>;
+  isActive: Generated<boolean>;
+  tenantId: string;
+  updatedAt: Generated<Timestamp>;
+}
+
+export interface VideoAssets {
+  bitrate: number | null;
+  codec: string | null;
+  createdAt: Generated<Timestamp>;
+  durationSeconds: number | null;
+  format: string;
+  id: Generated<string>;
+  resolution: string | null;
+  status: Generated<string>;
+  storageKey: string;
+  tenantId: string;
+  type: string;
+  videoId: string;
+}
+
+export interface VideoPermissions {
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  permission: string;
+  tenantId: string;
+  userId: string | null;
+  videoId: string;
+}
+
+export interface Videos {
+  createdAt: Generated<Timestamp>;
+  description: string | null;
+  durationSeconds: number | null;
+  id: Generated<string>;
+  ownerId: string;
+  status: Generated<string>;
+  tenantId: string;
+  title: string;
+  updatedAt: Generated<Timestamp>;
+  visibility: Generated<string>;
+}
+
+export interface VideoTags {
+  tagId: string;
+  videoId: string;
+}
+
+export interface VideoViews {
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  ipHash: string | null;
+  tenantId: string;
+  userId: string | null;
+  videoId: string;
+}
+
+export interface DB {
+  comments: Comments;
+  jobs: Jobs;
+  refreshTokens: RefreshTokens;
+  schemaMigrations: SchemaMigrations;
+  tags: Tags;
+  tenants: Tenants;
+  uploadSessions: UploadSessions;
+  users: Users;
+  videoAssets: VideoAssets;
+  videoPermissions: VideoPermissions;
+  videos: Videos;
+  videoTags: VideoTags;
+  videoViews: VideoViews;
+}
